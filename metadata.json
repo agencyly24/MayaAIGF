@@ -1,0 +1,7 @@
+{
+  "name": "Maya - AI Companion",
+  "description": "A real-time voice conversational AI companion.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
