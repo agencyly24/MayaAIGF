@@ -6,8 +6,6 @@ import { CallTimer } from './components/CallTimer';
 import { createPCM16Blob, decodeAudioData, base64ToUint8Array } from './utils/audioUtils';
 import { Phone, PhoneOff, Mic, MicOff, Settings } from 'lucide-react';
 
-const API_KEY = process.env.API_KEY;
-
 // System instruction for the "Girlfriend" persona. 
 // Note: Safety filters are strictly enforced by the Gemini API.
 const SYSTEM_INSTRUCTION = `
@@ -44,8 +42,8 @@ const App: React.FC = () => {
 
   useEffect(() => {
     // Initialize API client
-    if (API_KEY) {
-      aiRef.current = new GoogleGenAI({ apiKey: API_KEY });
+    if (process.env.API_KEY) {
+      aiRef.current = new GoogleGenAI({ apiKey: process.env.API_KEY });
     } else {
       setErrorMessage("API Key is missing.");
     }
@@ -234,11 +232,11 @@ const App: React.FC = () => {
     });
     sourceNodesRef.current.clear();
 
-    // NOTE: session.close() is not explicitly available on the promise wrapper in this version of the snippet logic,
-    // but the `onclose` callback handles cleanup. The context closure effectively stops the flow.
-    // Ideally, we would call session.close() if we stored the resolved session object.
-    
-    sessionPromiseRef.current = null;
+    // Close session
+    if (sessionPromiseRef.current) {
+        sessionPromiseRef.current.then(session => session.close());
+        sessionPromiseRef.current = null;
+    }
   }, []);
 
 
